@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+
+    <title>Chat con mis documentos</title>
+    <style>
+      body { margin: 0; padding-bottom: 3rem; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+
+      #form { background: rgba(0, 0, 0, 0.15); padding: 0.25rem; position: fixed; bottom: 0; left: 0; right: 0; display: flex; height: 3rem; box-sizing: border-box; backdrop-filter: blur(10px); }
+      #input { border: none; padding: 0 1rem; flex-grow: 1; border-radius: 2rem; margin: 0.25rem; }
+      #input:focus { outline: none; }
+      #form > button { background: #333; border: none; padding: 0 1rem; margin: 0.25rem; border-radius: 3px; outline: none; color: #fff; }
+
+      #messages { list-style-type: none; margin: 0; padding: 0; }
+      #messages > li { padding: 0.5rem 1rem; }
+      #messages > li:nth-child(odd) { background: #efefef; }
+
+
+    
+
+      /* Estilo del contenedor principal del chat */
+.chat-container {
+  max-width: 700px;
+  margin: 0 auto;
+  padding: 20px;
+  background-color: #f5f5f5;
+  border-radius: 5px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+/* Estilo de los mensajes del asistente (AI) */
+.ai-message {
+  margin-bottom: 10px;
+}
+
+/* Estilo de los mensajes del usuario */
+.user-message {
+  margin-bottom: 10px;
+  text-align: right;
+}
+
+/* Estilo del contenido del mensaje */
+.message-content {
+  padding: 10px;
+  background-color: #fff;
+  border-radius: 5px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+/* Estilo del texto dentro del mensaje */
+.message-text {
+  margin: 0;
+  font-size: 16px;
+  line-height: 1.5;
+}
+
+/* Estilo de los enlaces dentro del texto del mensaje */
+.message-text a {
+  color: #000;
+  text-decoration: underline;
+}
+
+/* Estilo del texto del mensaje del asistente (AI) */
+.ai-message .message-text {
+  color: #333;
+}
+
+/* Estilo del texto del mensaje del usuario */
+.user-message .message-text {
+  color: #333;
+}
+
+
+    </style>
+  </head>
+  <body>
+
+      <div class="chat-container">  
+         <!--  <ul id="messages"></ul> --> 
+          <ul id="reply" class="message-text"></ul>
+      </div>
+
+    <form id="form" action="">
+      <input id="input" autocomplete="off" /><button>Send</button>
+    </form>
+    <script src="/socket.io/socket.io.js"></script>
+
+    <script>
+      var socket = io();
+
+      var messages = document.getElementById('messages');
+      var replay = document.getElementById("reply");
+         
+      var form = document.getElementById('form');
+      var input = document.getElementById('input');
+
+      var numeroMsg=0;
+
+      form.addEventListener('submit', function(e) {
+        e.preventDefault();
+
+        if (input.value) {
+          socket.emit('chat message', input.value);
+          
+/*
+             var item = document.createElement('li');
+             item.innerHTML=input.value
+             messages.appendChild(item);
+*/
+             var item = document.createElement('li');
+             numeroMsg=numeroMsg+1
+            // item.innerHTML="No:"+numeroMsg
+             item.innerHTML="<h2>"+input.value+"</h2>"
+             replay.appendChild(item);
+            
+
+             window.scrollTo(0, document.body.scrollHeight);
+         
+             input.value = '';
+         
+         
+
+        }
+      });
+
+      socket.on('chat message', function(msg) {
+       // var item = document.createElement('li');
+       // item.textContent = msg;
+       // item.innerHTML=msg
+       // messages.appendChild(item);
+
+        // var item = document.getElementById("Div1");
+       //  replay.appendChild(item);
+        
+       //document.write(msg)
+       
+         const replay = document.getElementById("reply");
+       
+     
+       
+        replay.innerHTML=  replay.innerHTML + msg
+            /*
+
+              if (  msg.charCodeAt()=="46"  ){
+          
+            replay.innerHTML=replay.innerHTML+msg+"<br>"
+         
+        }else{ replay.innerHTML=  replay.innerHTML + msg}
+         if (typeof msg.output_text === 'undefined') {
+            replay.innerHTML=replay.innerHTML+msg+"<br>"
+         } else{ replay.innerHTML=  replay.innerHTML + msg}
+           */
+
+        window.scrollTo(0, document.body.scrollHeight);
+      });
+    </script>
+    </script>
+  </body>
+</html>
